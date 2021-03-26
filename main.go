@@ -40,12 +40,17 @@ func main()  {
         AllowedOrigins: []string{"*"},
         AllowedMethods: []string{"GET", "POST", "OPTIONS"},
         AllowedHeaders: []string{
-            "Content-Type", "x-requested-with",
-            "Authorization",
+            "Content-Type", "X-Requested-With",
+            "Authorization", "Origin",
+            "Accept",
         },
     })
 
     r.Use(c)
+
+    r.GET("/", func(context *gin.Context) {
+        context.String(200, "Github OAuth2")
+    })
 
     r.GET("/api/oauth/token", func(c *gin.Context) {
         code := c.Query("code")
@@ -68,12 +73,20 @@ func main()  {
 
         b, _ := json.Marshal(payload)
 
-        r, _ := http.Post(
+        r, err := http.Post(
             "https://github.com/login/oauth/access_token",
             "application/json",
             strings.NewReader(string(b)))
 
         defer r.Body.Close()
+
+        if err != nil {
+            c.JSON(http.StatusUnauthorized, gin.H{
+                "message": "HTTP ERROR",
+                "data": nil,
+            })
+            return
+        }
 
         contents, _ := io.ReadAll(r.Body)
         response := string(contents)
