@@ -1,4 +1,5 @@
 // Copyright 2021 the xiejiahe. All rights reserved. MIT license.
+// https://github.com/settings/developers
 
 package main
 
@@ -14,8 +15,6 @@ import (
     "net/url"
     "strings"
 )
-
-// https://github.com/settings/developers
 
 type Oauth struct {
     ClientId string `json:"client_id"`
@@ -49,10 +48,10 @@ func main()  {
     r.Use(c)
 
     r.GET("/", func(context *gin.Context) {
-        context.String(200, "Github OAuth2")
+        context.String(200, "Github OAuth2 => https://github.com/xjh22222228/github-oauth2")
     })
 
-    r.GET("/api/oauth/token", func(c *gin.Context) {
+    r.GET("/api/oauth", func(c *gin.Context) {
         code := c.Query("code")
 
         fmt.Println("code==>", code)

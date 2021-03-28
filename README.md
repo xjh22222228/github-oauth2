@@ -26,7 +26,7 @@ See [config.json](config.json)
 ## API
 
 ```js
-GET localhost:7001/api/oauth/token
+GET localhost:7001/api/oauth
 
 param:
 code: string
@@ -35,7 +35,7 @@ code: string
 ## Example For JS
 
 ```js
-fetch('http://localhost:7001/api/oauth/token?code=xxx', {
+fetch('http://localhost:7001/api/oauth?code=xxx', {
   method: 'GET'
 }).then(res => {
   console.log(res)
