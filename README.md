@@ -3,6 +3,7 @@
   <p align="center">
     <b>Github OAuth2</b>
   </p>
+  <p>Serverless For Vercel</p>
 
   <p align="center">
     <img src="https://img.shields.io/github/go-mod/go-version/xjh22222228/github-oauth2" />
@@ -13,7 +14,7 @@
 
 
 ## config
-See [config.json](config.json)
+See [config.json](api/config.json)
 
 ```json
 {
@@ -42,17 +43,3 @@ fetch('http://localhost:7001/api/oauth?code=xxx', {
   // ...
 })
 ```
-
-
-## Build
-```bash
-# Build Binary
-go build main.go
-
-
-# Run
-./main
-```
-
-
-
