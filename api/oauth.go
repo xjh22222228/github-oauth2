@@ -44,6 +44,8 @@ func HandlerAuth(w http.ResponseWriter, r *http.Request) {
   }
 
   code := r.FormValue("code")
+  clientId := r.FormValue("clientId")
+  clientSecret := r.FormValue("clientSecret")
 
   fmt.Println("code ==>", code)
 
@@ -58,10 +60,18 @@ func HandlerAuth(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  payload := Oauth{
+  payload := &Oauth{
     ClientId: oauth.ClientId,
     ClientSecret: oauth.ClientSecret,
     Code: code,
+  }
+
+  if clientId != "" {
+    payload.ClientId = clientId
+  }
+
+  if clientSecret != "" {
+    payload.ClientSecret = clientSecret
   }
 
   b, _ := json.Marshal(payload)
