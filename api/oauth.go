@@ -4,11 +4,10 @@
 package api
 
 import (
-  "embed"
+  _ "embed"
   "encoding/json"
   "fmt"
   "io"
-  "io/fs"
   "net/http"
   "net/url"
   "strings"
@@ -27,7 +26,7 @@ type Response struct {
 }
 
 //go:embed config.json
-var f embed.FS
+var jsonContent []byte
 
 func HandlerAuth(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -36,7 +35,6 @@ func HandlerAuth(w http.ResponseWriter, r *http.Request) {
     "X-Requested-With, Authorization, Origin, Accept")
 
   var oauth Oauth
-  jsonContent, _ := fs.ReadFile(f, "config.json")
   errJson := json.Unmarshal(jsonContent, &oauth)
 
   if errJson != nil {
