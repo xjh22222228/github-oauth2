@@ -79,6 +79,13 @@ func HandlerAuth(w http.ResponseWriter, r *http.Request) {
     "application/json",
     strings.NewReader(string(b)))
 
+  if err != nil {
+    resp, err = http.Post(
+      "https://github.com/login/oauth/access_token",
+      "application/json",
+      strings.NewReader(string(b)))
+  }
+
   defer resp.Body.Close()
 
   if err != nil {
