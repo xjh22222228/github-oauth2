@@ -4,128 +4,106 @@
 package api
 
 import (
-  _ "embed"
-  "encoding/json"
-  "fmt"
-  "io"
-  "net/http"
-  "net/url"
-  "strings"
+	_ "embed"
+	"encoding/json"
+	"fmt"
+	"github.com/xjh22222228/github-oauth2/utils"
+	"net/http"
+	"net/url"
 )
 
 type Oauth struct {
-  ClientId string `json:"client_id"`
-  ClientSecret string `json:"client_secret"`
-  Code string `json:"code"`
+	ClientId     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+	Code         string `json:"code"`
 }
 
 type Response struct {
-  Message string `json:"message"`
-  Data interface{} `json:"data"`
-  Status int `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+	Status  int         `json:"status"`
 }
+
+type Map map[string]interface{}
 
 //go:embed config.json
 var jsonContent []byte
 
 func HandlerAuth(w http.ResponseWriter, r *http.Request) {
-  w.Header().Set("Access-Control-Allow-Origin", "*")
-  w.Header().Set("Access-Control-Request-Method", "GET, POST, OPTIONS")
-  w.Header().Set("Access-Control-Allow-Headers", "Content-Type, " +
-    "X-Requested-With, Authorization, Origin, Accept")
+	utils.Cors(w)
 
-  var oauth Oauth
-  errJson := json.Unmarshal(jsonContent, &oauth)
+	var oauth Oauth
+	errJson := json.Unmarshal(jsonContent, &oauth)
 
-  if errJson != nil {
-    panic(errJson)
-  }
+	if errJson != nil {
+		panic(errJson)
+	}
 
-  code := r.FormValue("code")
-  clientId := r.FormValue("clientId")
-  clientSecret := r.FormValue("clientSecret")
+	code := r.FormValue("code")
+	clientId := r.FormValue("clientId")
+	clientSecret := r.FormValue("clientSecret")
 
-  fmt.Println("code ==>", code)
+	fmt.Println("code ==>", code)
 
-  if code == "" {
-    j, _ := json.Marshal(Response{
-      Message: "code cannot be empty",
-      Data: nil,
-      Status: 401,
-    })
+	if code == "" {
+		utils.Body(w, utils.Stringify(Response{
+			Message: "code cannot be empty",
+			Data:    nil,
+			Status:  401,
+		}))
+		return
+	}
 
-    fmt.Fprintf(w, string(j))
-    return
-  }
+	payload := &Oauth{
+		ClientId:     oauth.ClientId,
+		ClientSecret: oauth.ClientSecret,
+		Code:         code,
+	}
 
-  payload := &Oauth{
-    ClientId: oauth.ClientId,
-    ClientSecret: oauth.ClientSecret,
-    Code: code,
-  }
+	if clientId != "" {
+		payload.ClientId = clientId
+	}
 
-  if clientId != "" {
-    payload.ClientId = clientId
-  }
+	if clientSecret != "" {
+		payload.ClientSecret = clientSecret
+	}
 
-  if clientSecret != "" {
-    payload.ClientSecret = clientSecret
-  }
+	response := utils.Fetch(&utils.FetchConf{
+		Method: http.MethodPost,
+		Url:    "https://github.com/login/oauth/access_token",
+		Data:   payload,
+	})
+	values, err := url.ParseQuery(response)
+	accessToken := values.Get("access_token")
 
-  b, _ := json.Marshal(payload)
+	if err != nil || accessToken == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		utils.Body(w, utils.Stringify(Response{
+			Message: response,
+			Data:    nil,
+			Status:  http.StatusUnauthorized,
+		}))
+		return
+	}
 
-  resp, err := http.Post(
-    "https://github.com.cnpmjs.org/login/oauth/access_token",
-    "application/json",
-    strings.NewReader(string(b)))
+	userRes := utils.Fetch(&utils.FetchConf{
+		Method: "GET",
+		Url:    "https://api.github.com/user",
+		Headers: map[string]string{
+			"Authorization": "token " + accessToken,
+		},
+	})
+	var user User
+	json.Unmarshal([]byte(userRes), &user)
 
-  if err != nil {
-    resp, err = http.Post(
-      "https://github.com/login/oauth/access_token",
-      "application/json",
-      strings.NewReader(string(b)))
-  }
+	fmt.Println("user", user)
 
-  defer resp.Body.Close()
-
-  if err != nil {
-    w.WriteHeader(http.StatusUnauthorized)
-    j, _ := json.Marshal(Response{
-      Message: "HTTP ERROR",
-      Data: nil,
-      Status: http.StatusUnauthorized,
-    })
-
-    fmt.Fprintf(w, string(j))
-    return
-  }
-
-  contents, _ := io.ReadAll(resp.Body)
-  response := string(contents)
-  values, err := url.ParseQuery(response)
-  accessToken := values.Get("access_token")
-
-  if err != nil || accessToken == "" {
-    w.WriteHeader(http.StatusUnauthorized)
-    j, _ := json.Marshal(Response{
-      Message: response,
-      Data: nil,
-      Status: http.StatusUnauthorized,
-    })
-
-    fmt.Fprintf(w, string(j))
-    return
-  }
-
-  fmt.Println("response ==> ", response)
-
-  j, _ := json.Marshal(Response{
-    Message: "OK",
-    Data: map[string]string{
-      "accessToken": accessToken,
-    },
-    Status: http.StatusOK,
-  })
-
-  fmt.Fprintf(w, string(j))
+	utils.Body(w, utils.Stringify(Response{
+		Message: "OK",
+		Data: Map{
+			"accessToken": accessToken,
+			"user":        user,
+		},
+		Status: http.StatusOK,
+	}))
 }

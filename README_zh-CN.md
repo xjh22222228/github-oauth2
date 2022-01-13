@@ -20,6 +20,7 @@
 ## 例子
 - [https://github-oauth-opal.vercel.app](https://github-oauth-opal.vercel.app)
 - [https://github-oauth-opal.vercel.app/api/oauth](https://github-oauth-opal.vercel.app/api/oauth)
+- [https://github-oauth-opal.vercel.app/api/user](https://github-oauth-opal.vercel.app/api/user)
 
 
 
