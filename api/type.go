@@ -1,6 +1,10 @@
 package api
 
-import "time"
+import (
+	"github.com/xjh22222228/github-oauth2/utils"
+	"net/http"
+	"time"
+)
 
 // Commit https://api.github.com/repos/xjh22222228/nav/commits?page=0&per_page=32229
 type Commit struct {
@@ -247,4 +251,8 @@ type DateCount struct {
 type HourCount struct {
 	Hour  int `json:"hour"`
 	Count int `json:"count"`
+}
+
+func HandlerDemo(w http.ResponseWriter, r *http.Request) {
+	utils.Body(w, "Hanlder Demo")
 }
