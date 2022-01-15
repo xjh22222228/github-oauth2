@@ -67,19 +67,20 @@ func HandlerAuth(w http.ResponseWriter, r *http.Request) {
 	if clientSecret != "" {
 		payload.ClientSecret = clientSecret
 	}
-
 	response := utils.Fetch(&utils.FetchConf{
 		Method: http.MethodPost,
 		Url:    "https://github.com/login/oauth/access_token",
 		Data:   payload,
+		R:      r,
 	})
+
 	values, err := url.ParseQuery(response)
 	accessToken := values.Get("access_token")
 
 	if err != nil || accessToken == "" {
 		w.WriteHeader(http.StatusUnauthorized)
 		utils.Body(w, utils.Stringify(Response{
-			Message: response,
+			Message: "Failed",
 			Data:    nil,
 			Status:  http.StatusUnauthorized,
 		}))

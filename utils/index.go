@@ -41,6 +41,7 @@ func Fetch(c *FetchConf) string {
 	if err != nil {
 		return ""
 	}
+
 	request.Header.Add("Content-Type", "application/json")
 	accessToken := c.R.Header.Get("Authorization")
 	if accessToken != "" {
@@ -51,6 +52,7 @@ func Fetch(c *FetchConf) string {
 	}
 	resp, err := http.DefaultClient.Do(request)
 	if err != nil {
+		fmt.Printf("%v %v, 请求错误: %v\n\n", c.Method, c.Url, err.Error())
 		return ""
 	}
 
