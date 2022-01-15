@@ -93,6 +93,7 @@ func HandlerAuth(w http.ResponseWriter, r *http.Request) {
 		Headers: map[string]string{
 			"Authorization": "token " + accessToken,
 		},
+		R: r,
 	})
 	var user User
 	json.Unmarshal([]byte(userRes), &user)
