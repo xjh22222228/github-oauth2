@@ -1,4 +1,3 @@
-
 <p align="center">
   <p align="center">
     <b>Github OAuth2</b>
@@ -15,18 +14,13 @@
   </p>
 </p>
 
-
-
 ## Demo
+
 - [https://github-oauth-opal.vercel.app](https://github-oauth-opal.vercel.app)
 - [https://github-oauth-opal.vercel.app/api/oauth](https://github-oauth-opal.vercel.app/api/oauth)
 - [https://github-oauth-opal.vercel.app/api/user](https://github-oauth-opal.vercel.app/api/user)
 
-
-
-
-## config
-Edit [config.json](api/config.json)
+## Environment variable
 
 ```json
 {
@@ -35,21 +29,20 @@ Edit [config.json](api/config.json)
 }
 ```
 
-
 ## Usage
+
 - Fork
 - Make sure to make the warehouse private
 - https://github.com/apps/vercel
 - ...
 
-
-
 ## Example For JS
+
 ```js
-fetch('/api/oauth?code=xxx', {
-  method: 'GET'
-}).then(res => {
-  console.log(res)
+fetch("/api/oauth?code=xxx", {
+  method: "GET",
+}).then((res) => {
+  console.log(res);
   // ...
-})
+});
 ```

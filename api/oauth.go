@@ -10,6 +10,7 @@ import (
 	"github.com/xjh22222228/github-oauth2/utils"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 type Oauth struct {
@@ -26,22 +27,14 @@ type Response struct {
 
 type Map map[string]interface{}
 
-//go:embed config.json
-var jsonContent []byte
-
 func HandlerAuth(w http.ResponseWriter, r *http.Request) {
 	utils.Cors(w)
 
 	var oauth Oauth
-	errJson := json.Unmarshal(jsonContent, &oauth)
-
-	if errJson != nil {
-		panic(errJson)
-	}
 
 	code := r.FormValue("code")
-	clientId := r.FormValue("clientId")
-	clientSecret := r.FormValue("clientSecret")
+	clientId := os.Getenv("client_id")
+	clientSecret := os.Getenv("client_secret")
 
 	fmt.Println("code ==>", code)
 

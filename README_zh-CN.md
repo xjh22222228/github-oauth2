@@ -1,4 +1,3 @@
-
 <p align="center">
   <p align="center">
     <b>Github OAuth2</b>
@@ -15,18 +14,13 @@
   </p>
 </p>
 
-
-
 ## 例子
+
 - [https://github-oauth-opal.vercel.app](https://github-oauth-opal.vercel.app)
 - [https://github-oauth-opal.vercel.app/api/oauth](https://github-oauth-opal.vercel.app/api/oauth)
 - [https://github-oauth-opal.vercel.app/api/user](https://github-oauth-opal.vercel.app/api/user)
 
-
-
-
-## 配置
-编辑 [config.json](api/config.json)
+## 环境变量
 
 ```json
 {
@@ -35,21 +29,20 @@
 }
 ```
 
-
 ## 使用
+
 - Fork
 - 务必将当前仓库设为私用，否则会泄露 client_secret
 - 打开 https://github.com/apps/vercel 根据流程去跑
 - ...
 
-
-
 ## JS
+
 ```js
-fetch('/api/oauth?code=xxx', {
-  method: 'GET'
-}).then(res => {
-  console.log(res)
+fetch("/api/oauth?code=xxx", {
+  method: "GET",
+}).then((res) => {
+  console.log(res);
   // ...
-})
+});
 ```
