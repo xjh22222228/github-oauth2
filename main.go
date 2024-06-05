@@ -14,9 +14,6 @@ func main() {
 	http.HandleFunc("/api/oauth", api.HandlerAuth)
 	http.HandleFunc("/api/user", api.HandlerUser)
 
-	fmt.Println("client_id", os.Getenv("client_id"))
-	fmt.Println("client_secret", os.Getenv("client_secret"))
-
 	err := http.ListenAndServe(":7006", nil)
 	if err != nil {
 		panic(err)
