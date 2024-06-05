@@ -73,7 +73,7 @@ func HandlerAuth(w http.ResponseWriter, r *http.Request) {
 	if err != nil || accessToken == "" {
 		w.WriteHeader(http.StatusUnauthorized)
 		utils.Body(w, utils.Stringify(Response{
-			Message: "Failed",
+			Message: "Authorization failed, please check if the key is correct",
 			Data:    nil,
 			Status:  http.StatusUnauthorized,
 		}))
